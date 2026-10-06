@@ -11,7 +11,7 @@ Projeto da Fase 6 (*Navegando pelo mundo DevOps*) da FIAP: a aplicação Java Sp
 | Imagem Docker | `ghcr.io/justinojosesilva/coleta-plus` |
 | Staging | <http://57.156.71.196:8081/swagger-ui.html> |
 | Produção | <http://57.156.71.196:8080/swagger-ui.html> |
-| Integrante | [Seu nome - RM] |
+| Integrante | Justino José da Silva — RM562858 |
 
 ---
 

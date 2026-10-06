@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Coleta+ ESG — Documentação DevOps</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  :root { --verde:#1f7a4d; --verde-claro:#e8f4ee; --cinza:#5b6470; --borda:#d6dbe0; --codigo:#f4f6f8; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; color:#1d232a; font-size:10.5pt; line-height:1.5; margin:0; }
+  h1 { font-size:20pt; color:var(--verde); margin:0 0 4mm; padding-bottom:2mm; border-bottom:2px solid var(--verde); }
+  h2 { font-size:13pt; color:#1d232a; margin:6mm 0 2mm; }
+  h3 { font-size:11pt; margin:4mm 0 1.5mm; color:var(--verde); }
+  p { margin:0 0 2.5mm; }
+  section { page-break-before: always; }
+  table { width:100%; border-collapse:collapse; margin:2mm 0 4mm; font-size:9.5pt; page-break-inside:avoid; }
+  th, td { border:1px solid var(--borda); padding:1.6mm 2.2mm; text-align:left; vertical-align:top; }
+  th { background:var(--verde-claro); }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size:8.8pt; background:var(--codigo); padding:0 1mm; border-radius:2px; }
+  pre { font-family: "SF Mono", Menlo, Consolas, monospace; font-size:8.3pt; background:var(--codigo); border:1px solid var(--borda); border-radius:3px; padding:2.5mm 3mm; white-space:pre-wrap; margin:1mm 0 4mm; page-break-inside:avoid; line-height:1.35; }
+  ul { margin:0 0 3mm; padding-left:5mm; } li { margin-bottom:1mm; }
+  .capa { height:255mm; display:flex; flex-direction:column; justify-content:space-between; }
+  .capa .topo { color:var(--cinza); font-size:10pt; letter-spacing:.08em; text-transform:uppercase; }
+  .capa .titulo { font-size:30pt; font-weight:700; color:var(--verde); line-height:1.15; margin:0 0 4mm; }
+  .capa .sub { font-size:14pt; color:#1d232a; }
+  .capa .faixa { height:3mm; width:40mm; background:var(--verde); margin:8mm 0; }
+  .capa .info td { border:none; padding:1mm 0; font-size:11pt; } .capa .info td:first-child { color:var(--cinza); width:38mm; }
+  figure { margin:2mm 0 5mm; page-break-inside:avoid; }
+  figure img { width:100%; border:1px solid var(--borda); border-radius:3px; display:block; }
+  figcaption { font-size:9pt; color:var(--cinza); margin-top:1.2mm; }
+  .placeholder { border:2px dashed #c5ccd3; border-radius:4px; height:55mm; display:flex; align-items:center; justify-content:center; color:#8a939c; font-size:10pt; text-align:center; padding:4mm; }
+  .fluxo { display:flex; align-items:stretch; gap:1.5mm; margin:3mm 0 5mm; page-break-inside:avoid; }
+  .fluxo .etapa { flex:1; border:1.5px solid var(--verde); border-radius:4px; padding:2mm; font-size:8.6pt; background:#fff; }
+  .fluxo .etapa b { display:block; color:var(--verde); font-size:9.4pt; margin-bottom:1mm; }
+  .fluxo .seta { align-self:center; color:var(--verde); font-weight:700; }
+  .fluxo .gate { background:#fff7e6; border-color:#c98a00; } .fluxo .gate b { color:#9a6a00; }
+  .arq { border:1px solid var(--borda); border-radius:4px; padding:3mm; margin:2mm 0 4mm; page-break-inside:avoid; font-size:9pt; }
+  .arq .vm { border:1.5px solid #3b6fb6; border-radius:4px; padding:2.5mm; }
+  .arq .vm > b { color:#3b6fb6; }
+  .arq .envs { display:flex; gap:3mm; margin-top:2mm; }
+  .arq .env { flex:1; border:1.5px solid var(--verde); border-radius:4px; padding:2mm; }
+  .arq .env > b { color:var(--verde); }
+  .arq .box { border:1px solid var(--borda); background:var(--codigo); border-radius:3px; padding:1.2mm 2mm; margin-top:1.5mm; }
+  .desafio { border-left:3px solid var(--verde); padding:1mm 0 1mm 3mm; margin:0 0 4mm; page-break-inside:avoid; }
+  .desafio b.t { display:block; margin-bottom:.8mm; }
+  .ok { color:var(--verde); font-weight:700; text-align:center; width:18mm; }
+</style>
+</head>
+<body>
+
+<!-- ============================== CAPA ============================== -->
+<div class="capa">
+  <div class="topo">FIAP · Fase 6 — Navegando pelo mundo DevOps</div>
+  <div>
+    <div class="titulo">Cidades ESG Inteligentes<br>Coleta+ ESG API</div>
+    <div class="sub">Pipeline CI/CD, containerização e deploy automatizado<br>em ambientes de staging e produção</div>
+    <div class="faixa"></div>
+    <table class="info">
+      <tr><td>Integrante</td><td><b>[Seu nome — RM]</b></td></tr>
+      <tr><td>Stack</td><td>Java 21 · Spring Boot 4 · Oracle 23 Free</td></tr>
+      <tr><td>DevOps</td><td>GitHub Actions · Docker · Docker Compose · GHCR · Azure</td></tr>
+      <tr><td>Repositório</td><td>github.com/justinojosesilva/coleta-plus</td></tr>
+    </table>
+  </div>
+  <div class="topo">Outubro de 2026</div>
+</div>
+
+<!-- ============================== 1. PIPELINE ============================== -->
+<section>
+<h1>1. Descrição do pipeline</h1>
+<p>O Coleta+ é uma API REST de gestão de resíduos em pontos de coleta urbanos: registra resíduos e coletas, gera alertas automáticos quando um ponto atinge 90% da capacidade e calcula indicadores ESG (volume reciclado, pontos sobrecarregados e eficiência de coleta). Nesta fase o projeto passou a ter um ciclo de vida totalmente automatizado, do commit até a produção.</p>
+
+<h2>Ferramentas</h2>
+<table>
+  <tr><th style="width:32%">Ferramenta</th><th>Papel</th></tr>
+  <tr><td><b>GitHub Actions</b></td><td>Orquestra o pipeline (<code>.github/workflows/ci-cd.yml</code> + workflow reutilizável <code>deploy.yml</code>).</td></tr>
+  <tr><td><b>Maven + JUnit 5 + Mockito</b></td><td>Build e testes: Surefire para os unitários e Failsafe para os de integração.</td></tr>
+  <tr><td><b>Oracle 23 Free (service container)</b></td><td>Banco real usado pelo teste de integração dentro do runner.</td></tr>
+  <tr><td><b>Docker Buildx + GHCR</b></td><td>Gera a imagem e publica no GitHub Container Registry.</td></tr>
+  <tr><td><b>GitHub Environments</b></td><td><code>staging</code> e <code>production</code>, com secrets próprios; produção exige aprovação manual e só aceita a branch <code>main</code>.</td></tr>
+  <tr><td><b>Azure Virtual Machine</b></td><td>Ubuntu 24.04 (Standard_B2ms) com Docker; hospeda os dois ambientes isolados.</td></tr>
+</table>
+
+<h2>Etapas</h2>
+<div class="fluxo">
+  <div class="etapa"><b>1 · Build &amp; testes</b>mvn verify<br>13 unitários<br>1 integração (Oracle)</div><div class="seta">→</div>
+  <div class="etapa"><b>2 · Imagem</b>build multi-stage<br>push GHCR<br>tag <code>sha-xxxxxxx</code></div><div class="seta">→</div>
+  <div class="etapa"><b>3 · Staging</b>deploy via SSH<br>porta 8081<br>smoke test</div><div class="seta">→</div>
+  <div class="etapa gate"><b>Aprovação</b>revisor libera produção</div><div class="seta">→</div>
+  <div class="etapa"><b>4 · Produção</b>mesma imagem<br>porta 8080<br>smoke test</div>
+</div>
+
+<h2>Lógica de funcionamento</h2>
+<ul>
+  <li><b>Gatilhos:</b> todo <i>push</i> na <code>main</code> executa o fluxo completo; <i>pull requests</i> executam só build e testes, validando a mudança antes do merge. Também pode ser disparado manualmente.</li>
+  <li><b>Build &amp; testes:</b> compila com Java 21 e executa <code>./mvnw verify</code>. Os testes unitários cobrem regras de negócio (baixa de estoque na coleta, alerta de capacidade de 90%, cálculo de eficiência ESG), geração/validação de JWT e mapeamento de papéis. O teste de integração sobe a aplicação inteira contra um Oracle real, roda as migrations do Flyway e valida com <code>ddl-auto=validate</code> que todas as entidades batem com o schema. Relatórios e o <code>.jar</code> ficam como artefatos.</li>
+  <li><b>Imagem:</b> construída uma única vez e marcada com o hash do commit. <i>Build once, deploy many</i>: staging e produção recebem exatamente o mesmo artefato.</li>
+  <li><b>Deploy:</b> o runner gera o arquivo <code>&lt;ambiente&gt;.env</code> a partir dos secrets do environment, copia os arquivos por SSH para a VM e executa <code>deploy/deploy.sh</code>, que faz <code>docker compose pull</code> + <code>up -d</code> e aguarda o container ficar <i>healthy</i>.</li>
+  <li><b>Smoke test:</b> após cada deploy, o pipeline chama <code>/actuator/health</code>, confere em <code>/actuator/info</code> se o ambiente e a versão são os esperados, faz login e consulta os indicadores ESG. Qualquer falha interrompe o fluxo e produção não é liberada.</li>
+  <li><b>Segurança:</b> senhas do banco, segredo JWT e chave SSH ficam em GitHub Secrets. Nada sensível é versionado, e o banco de staging/produção não expõe porta para fora da VM.</li>
+</ul>
+</section>
+
+<!-- ============================== 2. DOCKER ============================== -->
+<section>
+<h1>2. Docker</h1>
+<h2>Arquitetura</h2>
+<div class="arq">
+  <div class="box"><b>GitHub Actions</b> → publica <code>ghcr.io/justinojosesilva/coleta-plus:sha-xxxxxxx</code> → acessa a VM via SSH</div>
+  <div class="vm" style="margin-top:2.5mm">
+    <b>VM Azure · Ubuntu 24.04 · Docker Engine</b> (portas públicas: 22, 8080, 8081)
+    <div class="envs">
+      <div class="env"><b>Projeto Compose <code>coleta-staging</code></b>
+        <div class="box">app (Spring Boot) · porta <b>8081</b>→8080</div>
+        <div class="box">oracle-db (Oracle 23 Free) · sem porta pública</div>
+        <div class="box">rede <code>backend</code> · volume <code>oracle-data</code></div>
+      </div>
+      <div class="env"><b>Projeto Compose <code>coleta-production</code></b>
+        <div class="box">app (Spring Boot) · porta <b>8080</b>→8080</div>
+        <div class="box">oracle-db (Oracle 23 Free) · sem porta pública</div>
+        <div class="box">rede <code>backend</code> · volume <code>oracle-data</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Cada ambiente é um projeto Docker Compose independente, com rede, volume e banco próprios. Um deploy em staging nunca afeta os dados de produção. A API encontra o banco pelo nome do serviço (<code>oracle-db</code>) na rede interna e só sobe quando o healthcheck do banco passa (<code>depends_on: service_healthy</code>).</p>
+
+<h2>Dockerfile (multi-stage)</h2>
+<pre># Estágio 1: build (JDK + Maven), não vai para produção
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /workspace
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+RUN ./mvnw -B -q dependency:go-offline          # camada de dependências em cache
+COPY src src
+RUN ./mvnw -B -q -DskipTests package &amp;&amp; cp target/coleta-plus-*.jar app.jar
+
+# Estágio 2: runtime (somente JRE)
+FROM eclipse-temurin:21-jre
+RUN groupadd --system app &amp;&amp; useradd --system --gid app --home /app app
+WORKDIR /app
+COPY --from=build --chown=app:app /workspace/app.jar app.jar
+USER app                                          # processo sem root
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError"
+EXPOSE 8080
+HEALTHCHECK --interval=15s --timeout=5s --start-period=90s --retries=5 \
+    CMD curl -fs http://localhost:8080/actuator/health || exit 1
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]</pre>
+
+<h2>Imagem criada</h2>
+<table>
+  <tr><th style="width:32%">Item</th><th>Valor</th></tr>
+  <tr><td>Registry / nome</td><td><code>ghcr.io/justinojosesilva/coleta-plus</code></td></tr>
+  <tr><td>Tags</td><td><code>sha-&lt;commit&gt;</code> (imutável, usada nos deploys) e <code>latest</code></td></tr>
+  <tr><td>Base de runtime</td><td><code>eclipse-temurin:21-jre</code> (Ubuntu)</td></tr>
+  <tr><td>Tamanho</td><td>~425 MB (só JRE + .jar; o estágio de build com JDK/Maven fica de fora)</td></tr>
+  <tr><td>Usuário</td><td><code>app</code> (não-root)</td></tr>
+  <tr><td>Healthcheck</td><td><code>/actuator/health</code> (inclui conexão com o banco)</td></tr>
+</table>
+
+<h2>Comandos usados</h2>
+<table>
+  <tr><th style="width:50%">Comando</th><th>Finalidade</th></tr>
+  <tr><td><code>cp .env.example .env</code></td><td>Criar a configuração local</td></tr>
+  <tr><td><code>docker compose up -d --build</code></td><td>Compilar a imagem e subir app + banco localmente</td></tr>
+  <tr><td><code>docker compose ps</code> / <code>logs -f app</code></td><td>Ver status (healthy) e logs</td></tr>
+  <tr><td><code>docker compose down -v</code></td><td>Derrubar o ambiente e apagar o volume</td></tr>
+  <tr><td><code>docker build -t coleta-plus:local .</code></td><td>Build manual da imagem</td></tr>
+  <tr><td><code>docker compose -p coleta-staging -f docker-compose.deploy.yml --env-file staging.env up -d</code></td><td>Deploy de um ambiente na VM (executado pelo <code>deploy.sh</code>)</td></tr>
+  <tr><td><code>./infra/create-azure-vm.sh</code></td><td>Criar a VM no Azure com Docker (cloud-init)</td></tr>
+</table>
+</section>
+
+<!-- ============================== 3. PRINTS PIPELINE ============================== -->
+<section>
+<h1>3. Pipeline em execução</h1>
+<figure><img src="prints/01-pipeline.png" data-desc="Visão geral do pipeline: build → imagem → staging → produção"><figcaption>Figura 1: execução completa do workflow CI/CD no GitHub Actions.</figcaption></figure>
+<figure><img src="prints/02-build-testes.png" data-desc="Job de build e testes (resumo dos testes)"><figcaption>Figura 2: build e testes automatizados (unitários + integração com Oracle).</figcaption></figure>
+<figure><img src="prints/03-imagem-ghcr.png" data-desc="Imagem publicada no GHCR"><figcaption>Figura 3: imagem Docker publicada no GitHub Container Registry.</figcaption></figure>
+<figure><img src="prints/04-aprovacao-producao.png" data-desc="Aprovação manual do deploy em produção"><figcaption>Figura 4: gate de aprovação manual antes do deploy em produção.</figcaption></figure>
+</section>
+
+<!-- ============================== 4. AMBIENTES ============================== -->
+<section>
+<h1>4. Ambientes de staging e produção</h1>
+<figure><img src="prints/05-staging.png" data-desc="Staging: Swagger / health em http://IP:8081"><figcaption>Figura 5: ambiente de <b>staging</b> (porta 8081) em funcionamento.</figcaption></figure>
+<figure><img src="prints/06-producao.png" data-desc="Produção: Swagger / health em http://IP:8080"><figcaption>Figura 6: ambiente de <b>produção</b> (porta 8080) em funcionamento.</figcaption></figure>
+<figure><img src="prints/07-containers-vm.png" data-desc="docker ps na VM mostrando os 4 containers"><figcaption>Figura 7: containers dos dois ambientes rodando na VM do Azure.</figcaption></figure>
+<figure><img src="prints/08-local-compose.png" data-desc="Ambiente local com docker compose"><figcaption>Figura 8: ambiente local com Docker Compose (app + Oracle, ambos healthy).</figcaption></figure>
+</section>
+
+<!-- ============================== 5. DESAFIOS ============================== -->
+<section>
+<h1>5. Desafios encontrados e soluções</h1>
+
+<div class="desafio"><b class="t">1. Todos os endpoints protegidos retornavam 403, inclusive para o administrador</b>
+O smoke test do deploy (login + consulta de indicadores) revelou um bug que existia desde a fase anterior: o <code>CustomUserDetailsService</code> registrava a permissão como <code>ADMIN</code>, mas <code>@PreAuthorize("hasRole('ADMIN')")</code> procura <code>ROLE_ADMIN</code>. <b>Solução:</b> prefixar <code>ROLE_</code> na authority e criar um teste unitário de regressão.</div>
+
+<div class="desafio"><b class="t">2. Entidade apontando para tabela inexistente</b>
+Com a autorização corrigida, a consulta aos indicadores ESG falhou com <code>ORA-00942</code>: a entidade <code>Collection</code> usava a tabela <code>collections</code>, mas a migration cria <code>TB_COLLECTIONS</code>. <b>Solução:</b> corrigir o mapeamento e fazer o teste de integração rodar com <code>ddl-auto=validate</code>. Agora qualquer divergência entre entidades e migrations quebra o pipeline antes do deploy (o teste falha com <i>missing table</i>).</div>
+
+<div class="desafio"><b class="t">3. Testes dependiam de um banco Oracle</b>
+O único teste existente (<code>contextLoads</code>) exigia um Oracle acessível, o que inviabilizava o CI. <b>Solução:</b> separar testes unitários (Mockito, sem banco, rodam no <code>mvn test</code>) de testes de integração (<code>*IT.java</code>, via Failsafe) e usar um <i>service container</i> Oracle 23 Free no GitHub Actions.</div>
+
+<div class="desafio"><b class="t">4. Variável de ambiente do segredo JWT ignorada</b>
+A propriedade usava <code>${JWT.SECRET:fiap}</code>, então a variável <code>JWT_SECRET</code> definida no container nunca era lida e todos os ambientes usavam o segredo padrão. <b>Solução:</b> corrigir para <code>${JWT_SECRET:fiap}</code> e injetar segredos diferentes por ambiente.</div>
+
+<div class="desafio"><b class="t">5. Oracle na nuvem e custo</b>
+Serviços PaaS gratuitos (Render, App Service) não oferecem Oracle e têm pouca memória para rodá-lo em container. <b>Solução:</b> uma VM B2ms (8 GB + 4 GB de swap via cloud-init) hospedando os dois ambientes isolados por projeto Compose, coberta pelo crédito do Azure for Students e desligável com <code>az vm deallocate</code>.</div>
+
+<div class="desafio"><b class="t">6. Saber se o deploy realmente funcionou</b>
+<code>docker compose up</code> retorna sucesso mesmo que a aplicação caia logo depois. <b>Solução:</b> Spring Boot Actuator + <code>HEALTHCHECK</code> no Dockerfile; o <code>deploy.sh</code> espera o status <i>healthy</i> (e imprime os logs se falhar), e o pipeline confirma ambiente/versão via <code>/actuator/info</code>.</div>
+</section>
+
+<!-- ============================== 6. CHECKLIST ============================== -->
+<section>
+<h1>6. Checklist de entrega</h1>
+<table>
+  <tr><th>Item</th><th class="ok" style="color:#1d232a">OK</th></tr>
+  <tr><td>Projeto compactado em .ZIP com estrutura organizada</td><td class="ok">☑</td></tr>
+  <tr><td>Dockerfile funcional</td><td class="ok">☑</td></tr>
+  <tr><td>docker-compose.yml ou arquivos Kubernetes</td><td class="ok">☑</td></tr>
+  <tr><td>Pipeline com etapas de build, teste e deploy</td><td class="ok">☑</td></tr>
+  <tr><td>README.md com instruções e prints</td><td class="ok">☑</td></tr>
+  <tr><td>Documentação técnica com evidências (PDF ou PPT)</td><td class="ok">☑</td></tr>
+  <tr><td>Deploy realizado nos ambientes staging e produção</td><td class="ok">☑</td></tr>
+</table>
+
+<h2>Estrutura do projeto entregue</h2>
+<pre>coleta-plus/
+├── Dockerfile
+├── docker-compose.yml              # ambiente local (app + Oracle)
+├── .env.example
+├── deploy/
+│   ├── docker-compose.deploy.yml   # staging e produção (imagem do GHCR)
+│   ├── deploy.sh                   # executado na VM pelo pipeline
+│   ├── staging.env.example
+│   └── production.env.example
+├── infra/
+│   ├── create-azure-vm.sh          # cria a VM no Azure
+│   └── cloud-init.yml              # instala Docker na VM
+├── .github/workflows/
+│   ├── ci-cd.yml                   # build → testes → imagem → staging → produção
+│   └── deploy.yml                  # deploy reutilizável por ambiente
+├── src/                            # código-fonte + testes
+├── docs/                           # esta documentação + prints
+└── README.md</pre>
+</section>
+
+<script>
+  // Print ainda não capturado: mostra um quadro indicando o que deve aparecer ali
+  document.querySelectorAll('figure img').forEach(function (img) {
+    function trocar() {
+      var d = document.createElement('div');
+      d.className = 'placeholder';
+      d.textContent = 'PRINT PENDENTE: ' + img.dataset.desc + ' (' + img.getAttribute('src') + ')';
+      img.replaceWith(d);
+    }
+    if (img.complete && img.naturalWidth === 0) trocar(); else img.addEventListener('error', trocar);
+  });
+</script>
+</body>
+</html>

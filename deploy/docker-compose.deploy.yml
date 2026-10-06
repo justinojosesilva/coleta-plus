@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
 
   app:
-    image: ${IMAGE:?defina IMAGE (ex.: ghcr.io/usuario/coleta-plus:sha-abc1234)}
+    image: "${IMAGE:?defina IMAGE - ex ghcr.io/usuario/coleta-plus:sha-abc1234}"
     depends_on:
       oracle-db:
         condition: service_healthy

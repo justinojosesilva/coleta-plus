@@ -210,6 +210,9 @@ Serviços PaaS gratuitos (Render, App Service) não oferecem Oracle e têm pouca
 
 <div class="desafio"><b class="t">6. Saber se o deploy realmente funcionou</b>
 <code>docker compose up</code> retorna sucesso mesmo que a aplicação caia logo depois. <b>Solução:</b> Spring Boot Actuator + <code>HEALTHCHECK</code> no Dockerfile; o <code>deploy.sh</code> espera o status <i>healthy</i> (e imprime os logs se falhar), e o pipeline confirma ambiente/versão via <code>/actuator/info</code>.</div>
+
+<div class="desafio"><b class="t">7. Restrições da assinatura Azure for Students e falhas no primeiro deploy</b>
+A série B não estava disponível em <code>eastus</code> para a assinatura de estudante (apenas regiões permitidas por <i>policy</i>). A VM foi criada em <code>chilecentral</code> com <code>Standard_B2as_v2</code>. Os acentos nos comentários do <code>cloud-init.yml</code> corromperam o YAML enviado e o Docker não foi instalado, então o arquivo passou a ser só ASCII. Por fim, o primeiro deploy em staging falhou porque um texto de ajuda <code>(ex.: ...)</code> dentro de <code>${IMAGE:?...}</code> quebrava o YAML do compose de deploy. <b>Solução:</b> correção da mensagem e uma nova etapa no pipeline que valida os dois arquivos Compose com <code>docker compose config</code> antes do build.</div>
 </section>
 
 <!-- ============================== 6. CHECKLIST ============================== -->

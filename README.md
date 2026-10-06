@@ -9,8 +9,8 @@ Projeto da Fase 6 (*Navegando pelo mundo DevOps*) da FIAP: a aplicação Java Sp
 | Repositório | <https://github.com/justinojosesilva/coleta-plus> |
 | Pipeline | <https://github.com/justinojosesilva/coleta-plus/actions> |
 | Imagem Docker | `ghcr.io/justinojosesilva/coleta-plus` |
-| Staging | `http://<IP-DA-VM>:8081/swagger-ui.html` |
-| Produção | `http://<IP-DA-VM>:8080/swagger-ui.html` |
+| Staging | <http://57.156.71.196:8081/swagger-ui.html> |
+| Produção | <http://57.156.71.196:8080/swagger-ui.html> |
 | Integrante | [Seu nome - RM] |
 
 ---

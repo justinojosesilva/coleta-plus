@@ -1,0 +1,10 @@
+#cloud-config
+# Executado automaticamente no primeiro boot da VM: instala Docker + Compose
+# e cria swap (o Oracle Free consome bastante memória).
+package_update: true
+runcmd:
+  - curl -fsSL https://get.docker.com | sh
+  - usermod -aG docker azureuser
+  - systemctl enable --now docker
+  - fallocate -l 4G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+  - echo '/swapfile none swap sw 0 0' >> /etc/fstab

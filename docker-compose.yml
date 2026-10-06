@@ -1,0 +1,55 @@
+# Ambiente LOCAL: compila a imagem a partir do código e sobe app + banco Oracle.
+# Uso: cp .env.example .env && docker compose up --build
+name: coleta-plus
+
+services:
+  oracle-db:
+    image: gvenzl/oracle-free:23-slim-faststart
+    container_name: coleta-oracle
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-oracle}
+      APP_USER: ${DB_USERNAME:-coleta}
+      APP_USER_PASSWORD: ${DB_PASSWORD:-coleta}
+    ports:
+      - "${DB_PORT:-1521}:1521"          # exposto só no ambiente local, para usar SQL Developer/DBeaver
+    volumes:
+      - oracle-data:/opt/oracle/oradata  # dados persistem entre reinícios
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      args:
+        APP_VERSION: local
+    image: coleta-plus:local
+    container_name: coleta-app
+    depends_on:
+      oracle-db:
+        condition: service_healthy       # só sobe a API quando o banco está pronto
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+      DB_URL: jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
+      DB_USERNAME: ${DB_USERNAME:-coleta}
+      DB_PASSWORD: ${DB_PASSWORD:-coleta}
+      JWT_SECRET: ${JWT_SECRET:-fiap}
+      SHOW_SQL: ${SHOW_SQL:-true}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  oracle-data:

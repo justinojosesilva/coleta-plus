@@ -1,0 +1,92 @@
+name: Deploy (reutilizável)
+
+# Workflow chamado pelo ci-cd.yml para cada ambiente (staging e production).
+# Copia os arquivos de deploy para a VM do Azure via SSH, gera o .env do ambiente
+# a partir dos secrets do GitHub Environment e executa deploy/deploy.sh na VM.
+on:
+  workflow_call:
+    inputs:
+      environment: { type: string, required: true }
+      port:        { type: number, required: true }
+      image:       { type: string, required: true }
+      version:     { type: string, required: true }
+
+jobs:
+  deploy:
+    name: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+      url: http://${{ vars.VM_HOST }}:${{ inputs.port }}/swagger-ui.html
+    permissions:
+      contents: read
+      packages: read
+    env:
+      VM_HOST: ${{ vars.VM_HOST }}
+      VM_USER: ${{ vars.VM_USER }}
+      REMOTE_DIR: coleta-plus/${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar chave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_vm
+          chmod 600 ~/.ssh/id_vm
+          ssh-keyscan -H "$VM_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Gerar arquivo de ambiente (${{ inputs.environment }}.env)
+        run: |
+          umask 077
+          cat > "${{ inputs.environment }}.env" <<ENV
+          APP_ENV=${{ inputs.environment }}
+          APP_PORT=${{ inputs.port }}
+          APP_VERSION=${{ inputs.version }}
+          IMAGE=${{ inputs.image }}
+          SHOW_SQL=${{ inputs.environment == 'production' && 'false' || 'true' }}
+          DB_USERNAME=coleta
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          ORACLE_PASSWORD=${{ secrets.ORACLE_PASSWORD }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          ENV
+
+      - name: Copiar arquivos para a VM
+        run: |
+          SSH="ssh -i ~/.ssh/id_vm $VM_USER@$VM_HOST"
+          $SSH "mkdir -p $REMOTE_DIR"
+          scp -i ~/.ssh/id_vm deploy/docker-compose.deploy.yml deploy/deploy.sh \
+              "${{ inputs.environment }}.env" "$VM_USER@$VM_HOST:$REMOTE_DIR/"
+
+      - name: Login da VM no GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | ssh -i ~/.ssh/id_vm "$VM_USER@$VM_HOST" \
+            "docker login ghcr.io -u ${{ github.actor }} --password-stdin"
+
+      - name: Executar deploy na VM
+        run: ssh -i ~/.ssh/id_vm "$VM_USER@$VM_HOST" "bash $REMOTE_DIR/deploy.sh ${{ inputs.environment }}"
+
+      - name: Smoke test (health, versão e login)
+        run: |
+          BASE="http://$VM_HOST:${{ inputs.port }}"
+          curl -fsS "$BASE/actuator/health" | tee health.json
+          echo
+          curl -fsS "$BASE/actuator/info" | tee info.json
+          echo
+          grep -q '"status":"UP"' health.json
+          grep -q '"environment":"${{ inputs.environment }}"' info.json
+          grep -q '"version":"${{ inputs.version }}"' info.json
+          TOKEN=$(curl -fsS -X POST "$BASE/api/auth/login" -H 'Content-Type: application/json' \
+            -d '{"email":"admin@coletaplus.local","password":"admin123"}' | sed 's/.*"token":"\([^"]*\)".*/\1/')
+          curl -fsS -H "Authorization: Bearer $TOKEN" "$BASE/api/indicadores-sustentabilidade" | tee indicadores.json
+          {
+            echo "### Deploy em **${{ inputs.environment }}** concluído"
+            echo "- URL: $BASE/swagger-ui.html"
+            echo "- Imagem: \`${{ inputs.image }}\`"
+            echo "- Health: \`$(cat health.json)\`"
+            echo "- Indicadores ESG: \`$(cat indicadores.json)\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Limpar chave SSH
+        if: always()
+        run: rm -f ~/.ssh/id_vm "${{ inputs.environment }}.env"

@@ -1,0 +1,12 @@
+target/
+.idea/
+.git/
+.github/
+docs/
+deploy/
+infra/
+*.iml
+*.md
+.env
+.env.*
+**/.DS_Store

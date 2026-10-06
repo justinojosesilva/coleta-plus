@@ -1,0 +1,53 @@
+# Compose usado nos ambientes STAGING e PRODUÇÃO (na VM do Azure).
+# Diferente do compose local, não compila nada: usa a imagem já publicada no GHCR pelo pipeline.
+# Cada ambiente roda como um projeto separado (-p coleta-staging / -p coleta-production),
+# com sua própria rede, volume e banco — totalmente isolados entre si.
+services:
+  oracle-db:
+    image: gvenzl/oracle-free:23-slim-faststart
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?defina ORACLE_PASSWORD}
+      APP_USER: ${DB_USERNAME:-coleta}
+      APP_USER_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD}
+    # Sem "ports": o banco NÃO fica acessível de fora, só pela rede interna do ambiente
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 90s
+    restart: unless-stopped
+
+  app:
+    image: ${IMAGE:?defina IMAGE (ex.: ghcr.io/usuario/coleta-plus:sha-abc1234)}
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    environment:
+      APP_ENV: ${APP_ENV:?defina APP_ENV}
+      APP_VERSION: ${APP_VERSION:-unknown}
+      DB_URL: jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
+      DB_USERNAME: ${DB_USERNAME:-coleta}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET}
+      SHOW_SQL: ${SHOW_SQL:-false}
+    ports:
+      - "${APP_PORT:?defina APP_PORT}:8080"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+    restart: unless-stopped
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  oracle-data:

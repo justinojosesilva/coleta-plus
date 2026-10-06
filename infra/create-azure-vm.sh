@@ -5,9 +5,9 @@
 set -euo pipefail
 
 RG="${RG:-rg-coleta-plus}"
-LOCATION="${LOCATION:-eastus}"
+LOCATION="${LOCATION:-chilecentral}"   # Azure for Students: B-series disponível aqui
 VM="${VM:-vm-coleta-plus}"
-SIZE="${SIZE:-Standard_B2ms}"          # 2 vCPU / 8 GB: comporta 2 Oracle + 2 APIs
+SIZE="${SIZE:-Standard_B2as_v2}"       # 2 vCPU / 8 GB: comporta 2 Oracle + 2 APIs
 KEY="${KEY:-$HOME/.ssh/coleta_plus_vm}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 

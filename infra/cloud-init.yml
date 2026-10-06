@@ -1,6 +1,8 @@
 #cloud-config
-# Executado automaticamente no primeiro boot da VM: instala Docker + Compose
-# e cria swap (o Oracle Free consome bastante memória).
+# Executado no primeiro boot da VM: instala Docker + Compose e cria 4 GB de swap
+# (o Oracle Free consome bastante memoria).
+# ATENCAO: mantenha este arquivo apenas com caracteres ASCII (sem acentos);
+# acentos corrompem o YAML enviado via --custom-data e a VM ignora o arquivo.
 package_update: true
 runcmd:
   - curl -fsSL https://get.docker.com | sh

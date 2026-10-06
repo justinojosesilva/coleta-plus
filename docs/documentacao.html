@@ -78,7 +78,7 @@
   <tr><td><b>Oracle 23 Free (service container)</b></td><td>Banco real usado pelo teste de integração dentro do runner.</td></tr>
   <tr><td><b>Docker Buildx + GHCR</b></td><td>Gera a imagem e publica no GitHub Container Registry.</td></tr>
   <tr><td><b>GitHub Environments</b></td><td><code>staging</code> e <code>production</code>, com secrets próprios; produção exige aprovação manual e só aceita a branch <code>main</code>.</td></tr>
-  <tr><td><b>Azure Virtual Machine</b></td><td>Ubuntu 24.04 (Standard_B2ms) com Docker; hospeda os dois ambientes isolados.</td></tr>
+  <tr><td><b>Azure Virtual Machine</b></td><td>Ubuntu 24.04 (Standard_B2as_v2) com Docker; hospeda os dois ambientes isolados.</td></tr>
 </table>
 
 <h2>Etapas</h2>
@@ -206,7 +206,7 @@ O único teste existente (<code>contextLoads</code>) exigia um Oracle acessível
 A propriedade usava <code>${JWT.SECRET:fiap}</code>, então a variável <code>JWT_SECRET</code> definida no container nunca era lida e todos os ambientes usavam o segredo padrão. <b>Solução:</b> corrigir para <code>${JWT_SECRET:fiap}</code> e injetar segredos diferentes por ambiente.</div>
 
 <div class="desafio"><b class="t">5. Oracle na nuvem e custo</b>
-Serviços PaaS gratuitos (Render, App Service) não oferecem Oracle e têm pouca memória para rodá-lo em container. <b>Solução:</b> uma VM B2ms (8 GB + 4 GB de swap via cloud-init) hospedando os dois ambientes isolados por projeto Compose, coberta pelo crédito do Azure for Students e desligável com <code>az vm deallocate</code>.</div>
+Serviços PaaS gratuitos (Render, App Service) não oferecem Oracle e têm pouca memória para rodá-lo em container. <b>Solução:</b> uma VM B2as_v2 (8 GB + 4 GB de swap via cloud-init) hospedando os dois ambientes isolados por projeto Compose, coberta pelo crédito do Azure for Students e desligável com <code>az vm deallocate</code>.</div>
 
 <div class="desafio"><b class="t">6. Saber se o deploy realmente funcionou</b>
 <code>docker compose up</code> retorna sucesso mesmo que a aplicação caia logo depois. <b>Solução:</b> Spring Boot Actuator + <code>HEALTHCHECK</code> no Dockerfile; o <code>deploy.sh</code> espera o status <i>healthy</i> (e imprime os logs se falhar), e o pipeline confirma ambiente/versão via <code>/actuator/info</code>.</div>

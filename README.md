@@ -70,7 +70,7 @@ Rodando os testes sem Docker (Java 21):
 
 **Ferramenta:** GitHub Actions ([`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) + workflow reutilizável [`deploy.yml`](.github/workflows/deploy.yml)).
 **Registry:** GitHub Container Registry (GHCR).
-**Infraestrutura:** VM Linux no Microsoft Azure (Ubuntu 24.04, Standard_B2ms) com Docker, que hospeda os dois ambientes isolados.
+**Infraestrutura:** VM Linux no Microsoft Azure (Ubuntu 24.04, Standard_B2as_v2) com Docker, que hospeda os dois ambientes isolados.
 
 ```mermaid
 flowchart LR
